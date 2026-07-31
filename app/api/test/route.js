@@ -7,17 +7,24 @@ export async function GET() {
   try {
     connection = await getConnection();
 
-    const result = await connection.execute(
-      `SELECT train_name FROM trains ORDER BY train_id`
-    );
+    const result = await connection.execute(`
+      SELECT
+        train_id,
+        train_number,
+        train_name,
+        source,
+        destination,
+        fare
+      FROM trains
+      ORDER BY train_id
+    `);
 
     return NextResponse.json({
       success: true,
-      trains: result.rows,
+      data: result.rows,
     });
 
   } catch (error) {
-
     console.error(error);
 
     return NextResponse.json({
@@ -26,7 +33,6 @@ export async function GET() {
     });
 
   } finally {
-
     if (connection) {
       await connection.close();
     }
